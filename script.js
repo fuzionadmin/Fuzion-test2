@@ -1,63 +1,49 @@
-function previewImage(inputId, previewId, textId){
+function setupUpload(inputId,imgId){
 
-const input = document.getElementById(inputId);
+    const input=document.getElementById(inputId);
 
-input.addEventListener("change", function(){
+    input.addEventListener("change",function(){
 
-const file = this.files[0];
+        const file=this.files[0];
 
-if(file){
+        if(!file) return;
 
-const reader = new FileReader();
+        const reader=new FileReader();
 
-reader.onload = function(e){
+        reader.onload=function(e){
 
-document.getElementById(previewId).src = e.target.result;
-document.getElementById(previewId).style.display = "block";
+            const img=document.getElementById(imgId);
 
-document.getElementById(textId).style.display = "none";
+            img.src=e.target.result;
+
+            img.style.display="block";
+
+            img.nextElementSibling.style.display="none";
+        }
+
+        reader.readAsDataURL(file);
+
+    });
 
 }
 
-reader.readAsDataURL(file);
+setupUpload("beforeInput","beforeImg");
+setupUpload("afterInput","afterImg");
 
-}
+function downloadResult(){
 
-});
+    html2canvas(document.getElementById("capture"),{
+        scale:2
+    }).then(canvas=>{
 
-}
+        const link=document.createElement("a");
 
-previewImage(
-"beforeInput",
-"beforePreview",
-"beforeText"
-);
+        link.download="Fuzion-Before-After.png";
 
-previewImage(
-"afterInput",
-"afterPreview",
-"afterText"
-);
+        link.href=canvas.toDataURL("image/png");
 
-function downloadImage(){
+        link.click();
 
-html2canvas(
-document.getElementById("captureArea"),
-{
-scale:2
-}
-).then(canvas=>{
-
-const link=document.createElement("a");
-
-link.download=
-"Fuzion-Before-After.png";
-
-link.href=
-canvas.toDataURL();
-
-link.click();
-
-});
+    });
 
 }
